@@ -4,21 +4,17 @@ namespace app\modules\car\services;
 
 use app\modules\car\entities\CarEntity;
 use app\modules\car\entities\CarOptionEntity;
-use app\modules\car\repositories\CarRepository;
-use yii\db\Exception;
+use app\modules\car\interfaces\CarRepositoryInterface;
 
 class CarService
 {
-    private CarRepository $repository;
+    private CarRepositoryInterface $repository;
 
-    public function __construct(CarRepository $repository)
+    public function __construct(CarRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
-    /**
-     * @throws Exception
-     */
     public function create(array $data): CarEntity
     {
         $option = null;

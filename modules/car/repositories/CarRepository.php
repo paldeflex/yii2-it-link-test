@@ -2,6 +2,7 @@
 
 namespace app\modules\car\repositories;
 
+use app\modules\car\interfaces\CarRepositoryInterface;
 use app\modules\car\entities\CarEntity;
 use app\modules\car\entities\CarOptionEntity;
 use app\modules\car\mappers\CarDataMapper;
@@ -9,7 +10,7 @@ use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Query;
 
-class CarRepository
+class CarRepository implements CarRepositoryInterface
 {
     private Connection $db;
     private CarDataMapper $mapper;
