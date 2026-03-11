@@ -2,8 +2,8 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'pgsql:host=postgres;dbname=cars_db',
-    'username' => 'cars_user',
-    'password' => 'secret',
+    'dsn' => getenv('DB_DSN'),
+    'username' => getenv('DB_USER'),
+    'password' => getenv('DB_PASSWORD'),
     'charset' => 'utf8',
 ];
