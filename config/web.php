@@ -13,8 +13,10 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'LCkPvoeDP7TZQvC4U72ZcB87_drgdjGr',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -42,14 +44,21 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                'POST car/create' => 'car/car/create',
+                'GET car/list' => 'car/car/list',
+                'GET car/<id:\d+>' => 'car/car/view',
             ],
         ],
-        */
+    ],
+    'modules' => [
+        'car' => [
+            'class' => 'app\modules\car\Module',
+        ],
     ],
     'params' => $params,
 ];
