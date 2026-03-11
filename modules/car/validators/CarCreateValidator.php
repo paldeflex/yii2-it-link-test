@@ -30,6 +30,9 @@ class CarCreateValidator implements CarCreateValidatorInterface
 
         if (!empty($data['options'])) {
             $opt = $data['options'];
+            if (array_is_list($opt)) {
+                $opt = $opt[0];
+            }
 
             $optionFields = [
                 'brand' => 'Марка',

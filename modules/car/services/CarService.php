@@ -21,6 +21,9 @@ class CarService
 
         if (!empty($data['options'])) {
             $opt = $data['options'];
+            if (array_is_list($opt)) {
+                $opt = $opt[0];
+            }
             $option = new CarOptionEntity(
                 brand: $opt['brand'],
                 model: $opt['model'],

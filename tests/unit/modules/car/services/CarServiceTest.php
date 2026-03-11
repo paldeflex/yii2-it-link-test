@@ -75,4 +75,33 @@ class CarServiceTest extends Unit
         $this->assertEquals(2019, $car->option->year);
         $this->assertEquals(60000, $car->option->mileage);
     }
+
+    public function testCreateCarWithOptionsAsArray(): void
+    {
+        $repository = $this->createMockRepository();
+        $service = new CarService($repository);
+
+        $data = [
+            'title' => 'BMW X5',
+            'description' => 'В идеальном состоянии',
+            'price' => '3500000',
+            'photo_url' => 'https://example.com/bmw.jpg',
+            'contacts' => '+7 999 111 22 33',
+            'options' => [
+                [
+                    'brand' => 'BMW',
+                    'model' => 'X5',
+                    'year' => 2021,
+                    'body' => 'suv',
+                    'mileage' => 30000,
+                ],
+            ],
+        ];
+
+        $car = $service->create($data);
+
+        $this->assertNotNull($car->option);
+        $this->assertEquals('BMW', $car->option->brand);
+        $this->assertEquals(2021, $car->option->year);
+    }
 }
