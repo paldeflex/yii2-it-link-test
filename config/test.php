@@ -43,5 +43,10 @@ return [
             */
         ],
     ],
+    'modules' => [
+        'car' => [
+            'class' => 'app\modules\car\Module',
+        ],
+    ],
     'params' => $params,
 ];
