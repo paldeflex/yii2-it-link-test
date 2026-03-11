@@ -26,18 +26,27 @@ class CarRepository implements CarRepositoryInterface
      */
     public function save(CarEntity $car): CarEntity
     {
-        $this->db->createCommand()->insert('car', [
-            'title' => $car->title,
-            'description' => $car->description,
-            'price' => $car->price,
-            'photo_url' => $car->photoUrl,
-            'contacts' => $car->contacts,
-        ])->execute();
+        $transaction = $this->db->beginTransaction();
 
-        $car->id = (int)$this->db->getLastInsertID('car_id_seq');
+        try {
+            $this->db->createCommand()->insert('car', [
+                'title' => $car->title,
+                'description' => $car->description,
+                'price' => $car->price,
+                'photo_url' => $car->photoUrl,
+                'contacts' => $car->contacts,
+            ])->execute();
 
-        if ($car->option !== null) {
-            $this->saveOption($car->id, $car->option);
+            $car->id = (int)$this->db->getLastInsertID('car_id_seq');
+
+            if ($car->option !== null) {
+                $this->saveOption($car->id, $car->option);
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
         }
 
         return $this->findById($car->id);
@@ -88,18 +97,28 @@ class CarRepository implements CarRepositoryInterface
             ->offset($offset)
             ->all($this->db);
 
-        $totalCount = (int)new Query()
+        $totalCount = (int)(new Query())
             ->from('car')
             ->count('*', $this->db);
 
+        $carIds = array_column($rows, 'id');
+        $optionRows = [];
+
+        if (!empty($carIds)) {
+            $options = new Query()
+                ->from('car_option')
+                ->where(['car_id' => $carIds])
+                ->all($this->db);
+
+            foreach ($options as $opt) {
+                $optionRows[$opt['car_id']] = $opt;
+            }
+        }
+
         $cars = [];
         foreach ($rows as $row) {
-            $optionRow = new Query()
-                ->from('car_option')
-                ->where(['car_id' => $row['id']])
-                ->one($this->db);
-
-            $cars[] = $this->mapper->fromRow($row, $optionRow ?: null);
+            $optionRow = $optionRows[$row['id']] ?? null;
+            $cars[] = $this->mapper->fromRow($row, $optionRow);
         }
 
         return [

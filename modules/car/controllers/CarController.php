@@ -29,13 +29,17 @@ class CarController extends Controller
         parent::__construct($id, $module, $config);
     }
 
+    public function beforeAction($action): bool
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return parent::beforeAction($action);
+    }
+
     /**
      * @throws InvalidConfigException
      */
     public function actionCreate(): array
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $data = Yii::$app->request->getBodyParams();
 
         $errors = $this->validator->validate($data);
@@ -52,8 +56,6 @@ class CarController extends Controller
 
     public function actionView(int $id): array
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $car = $this->carService->getById($id);
 
         if ($car === null) {
@@ -66,8 +68,6 @@ class CarController extends Controller
 
     public function actionList(): array
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $page = (int)Yii::$app->request->get('page', 1);
         if ($page < 1) {
             $page = 1;
