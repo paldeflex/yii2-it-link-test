@@ -1,0 +1,44 @@
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Handles the creation of table `{{%car_option}}`.
+ */
+class m260311_074919_create_car_option_table extends Migration
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function safeUp()
+    {
+        $this->createTable('car_option', [
+            'id' => $this->primaryKey(),
+            'car_id' => $this->integer()->notNull()->unique(),
+            'brand' => $this->string()->notNull(),
+            'model' => $this->string()->notNull(),
+            'year' => $this->integer()->notNull(),
+            'body' => $this->string()->notNull(),
+            'mileage' => $this->integer()->notNull(),
+        ]);
+
+        $this->addForeignKey(
+            'fk-car_option-car_id',
+            'car_option',
+            'car_id',
+            'car',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function safeDown()
+    {
+        $this->dropForeignKey('fk-car_option-car_id', 'car_option');
+        $this->dropTable('car_option');
+    }
+}
